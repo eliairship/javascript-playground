@@ -3,8 +3,8 @@ import { routeAction$, zod$, z, Form } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const useLoginAction = routeAction$(
-  async () => {
-    return { success: true };
+  async (user) => {
+    return { success: true, user };
   },
   // Zod schema is used to validate the FormData
   zod$({
@@ -45,7 +45,9 @@ export default component$(() => {
               name="email"
               placeholder="Email"
             />
-            {action.value?.failed && <p class='text-red-700'>{action.value.fieldErrors.email}</p>}
+            {action.value?.failed && (
+              <p class="text-red-700">{action.value.fieldErrors.email}</p>
+            )}
           </div>
           <div class="space-y-2">
             <label
@@ -61,7 +63,9 @@ export default component$(() => {
               placeholder="Password"
               type="password"
             />
-            {action.value?.failed && <p class='text-red-700'>{action.value.fieldErrors.password}</p>}
+            {action.value?.failed && (
+              <p class="text-red-700">{action.value.fieldErrors.password}</p>
+            )}
           </div>
           <div class="flex items-center p-6">
             <button
@@ -73,6 +77,7 @@ export default component$(() => {
           </div>
         </Form>
       </div>
+      {action.value?.success && <p class="pt-4">Logged in successfully</p>}
     </div>
   );
 });
