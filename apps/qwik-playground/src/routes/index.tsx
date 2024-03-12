@@ -1,19 +1,47 @@
-import { component$ } from "@builder.io/qwik";
-import { routeAction$, zod$, z, Form } from "@builder.io/qwik-city";
+import type { QRL } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { routeLoader$, z } from "@builder.io/qwik-city";
+import type { InitialValues } from "@modular-forms/qwik";
+import {
+  type SubmitHandler,
+  formAction$,
+  useForm,
+  zodForm$,
+} from "@modular-forms/qwik";
 
-export const useLoginAction = routeAction$(
-  async (user) => {
-    return { success: true, user };
-  },
-  zod$({
-    email: z.string().email(),
-    password: z.string().min(1, "Please enter your password"),
-  }),
-);
+const LoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1, "Please enter your password"),
+});
+
+type LoginForm = z.infer<typeof LoginSchema>;
+
+export const useFormAction = formAction$<LoginForm>((values) => {
+  console.log("formAction", values);
+
+  // Runs on server
+}, zodForm$(LoginSchema));
+
+export const useFormLoader = routeLoader$<InitialValues<LoginForm>>(() => ({
+  email: "",
+  password: "",
+}));
 
 export default component$(() => {
-  const action = useLoginAction();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [loginForm, { Form, Field }] = useForm<LoginForm>({
+    loader: useFormLoader(),
+    action: useFormAction(),
+    validate: zodForm$(LoginSchema),
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleSubmit: QRL<SubmitHandler<LoginForm>> = $((values, event) => {
+    console.log("handleSubmit", values);
+
+    // Runs on client
+  });
 
   return (
     <div class="flex h-screen flex-col items-center justify-center">
@@ -29,44 +57,48 @@ export default component$(() => {
             Enter your email below to login to your account.
           </p>
         </div>
-        <Form action={action} class="space-y-4 p-6">
-          <div class="space-y-2">
-            <label
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              for="email"
-            >
-              Email
-            </label>
-            <input
-              class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              id="email"
-              name="email"
-              placeholder="Email"
-              value={action.formData?.get("email")}
-            />
-            {action.value?.failed && (
-              <p class="text-red-700">{action.value.fieldErrors.email}</p>
+        <Form onSubmit$={handleSubmit} class="space-y-4 p-6">
+          <Field name="email">
+            {(field, props) => (
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for={field.name}
+                >
+                  Email
+                </label>
+                <input
+                  class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  id={field.name}
+                  placeholder="Email"
+                  value={field.value}
+                  {...props}
+                />
+                {field.error && <p class="text-red-700">{field.error}</p>}
+              </div>
             )}
-          </div>
-          <div class="space-y-2">
-            <label
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              for="password"
-            >
-              Password
-            </label>
-            <input
-              class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              id="password"
-              name="password"
-              placeholder="Password"
-              type="password"
-              value={action.formData?.get("password")}
-            />
-            {action.value?.failed && (
-              <p class="text-red-700">{action.value.fieldErrors.password}</p>
+          </Field>
+          <Field name="password">
+            {(field, props) => (
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  for={field.name}
+                >
+                  Password
+                </label>
+                <input
+                  class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  id={field.name}
+                  placeholder="Password"
+                  type="password"
+                  value={field.value}
+                  {...props}
+                />
+                {field.error && <p class="text-red-700">{field.error}</p>}
+              </div>
             )}
-          </div>
+          </Field>
           <div class="flex items-center p-6">
             <button
               class="ring-offset-background focus-visible:ring-ring inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
@@ -77,7 +109,6 @@ export default component$(() => {
           </div>
         </Form>
       </div>
-      {action.value?.success && <p class="pt-4">Logged in successfully</p>}
     </div>
   );
 });
