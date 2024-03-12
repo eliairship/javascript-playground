@@ -23,7 +23,7 @@ export default component$(() => {
   return (
     <>
       {/* <Header /> */}
-      <main>
+      <main class="mx-auto flex max-w-screen-lg flex-col gap-4 p-4">
         <Slot />
       </main>
       {/* <Footer /> */}
