@@ -6,7 +6,6 @@ export const useLoginAction = routeAction$(
   async (user) => {
     return { success: true, user };
   },
-  // Zod schema is used to validate the FormData
   zod$({
     email: z.string().email(),
     password: z.string().min(1, "Please enter your password"),
@@ -15,7 +14,6 @@ export const useLoginAction = routeAction$(
 
 export default component$(() => {
   const action = useLoginAction();
-  console.log("🚀 ~ action:", action);
 
   return (
     <div class="flex h-screen flex-col items-center justify-center">
@@ -44,6 +42,7 @@ export default component$(() => {
               id="email"
               name="email"
               placeholder="Email"
+              value={action.formData?.get("email")}
             />
             {action.value?.failed && (
               <p class="text-red-700">{action.value.fieldErrors.email}</p>
@@ -62,6 +61,7 @@ export default component$(() => {
               name="password"
               placeholder="Password"
               type="password"
+              value={action.formData?.get("password")}
             />
             {action.value?.failed && (
               <p class="text-red-700">{action.value.fieldErrors.password}</p>
