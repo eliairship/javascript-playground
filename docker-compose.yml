@@ -11,5 +11,16 @@ services:
       POSTGRES_PASSWORD: password  
     volumes:  
       - db:/var/lib/postgresql/data  
+  api:
+    profiles: ["dev"]
+    build:
+      context: ./apps/hono-rest-api
+      dockerfile: ./apps/hono-rest-api/Dockerfile.local
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./apps/hono-rest-api:/app
+    environment:
+      DATABASE_URL: "postgres://postgres:password@db:5432/js-playground-db?schema=public"
 volumes:  
   db:
