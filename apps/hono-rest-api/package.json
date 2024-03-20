@@ -3,14 +3,18 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "devv": "tsx watch src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "generate:migration": "drizzle-kit generate:pg",
+    "build": "tsc",
+    "prod": "node --import tsx/esm ./file.ts",
+    "generate:migration": "drizzle-kit generate:sqlite",
     "db:migrate": "tsx src/migrate.ts",
     "db:studio": "drizzle-kit studio --port 5000 --verbose"
   },
   "dependencies": {
     "@hono/node-server": "^1.8.2",
     "@hono/zod-validator": "^0.1.11",
+    "@libsql/client": "^0.5.6",
     "@lucia-auth/adapter-drizzle": "^1.0.2",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.29.4",
@@ -25,6 +29,7 @@
     "@types/node": "^20.11.17",
     "@types/pg": "^8.11.2",
     "drizzle-kit": "^0.20.14",
+    "ts-node": "^10.9.2",
     "tsx": "^3.12.2"
   }
 }

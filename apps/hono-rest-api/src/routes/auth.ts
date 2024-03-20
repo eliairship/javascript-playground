@@ -1,6 +1,7 @@
 import { Hono, MiddlewareHandler } from 'hono';
 import { Lucia, generateId } from 'lucia';
-import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+import { DrizzleSQLiteAdapter } from '@lucia-auth/adapter-drizzle';
+
 import { sessionTable, userTable } from '../schema';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
@@ -11,7 +12,8 @@ import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import { HonoVariables } from '..';
 import { Variables } from 'hono/types';
 
-const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
+const adapter = new DrizzleSQLiteAdapter(db, sessionTable, userTable);
+
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {

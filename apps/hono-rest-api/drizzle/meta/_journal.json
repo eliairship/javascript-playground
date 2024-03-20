@@ -1,12 +1,12 @@
 {
   "version": "5",
-  "dialect": "pg",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1709228681060,
-      "tag": "0000_wakeful_pixie",
+      "when": 1710944447582,
+      "tag": "0000_solid_blindfold",
       "breakpoints": true
     }
   ]

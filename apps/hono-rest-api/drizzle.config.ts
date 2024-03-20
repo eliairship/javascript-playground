@@ -4,8 +4,9 @@ import type { Config } from 'drizzle-kit';
 export default {
   schema: './src/schema.ts',
   out: './drizzle',
-  driver: 'pg', // 'pg' | 'mysql2' | 'better-sqlite' | 'libsql' | 'turso'
+  driver: 'turso', // 'pg' | 'mysql2' | 'better-sqlite' | 'libsql' | 'turso'
   dbCredentials: {
-    connectionString: process.env.DB_URL ?? '',
+    url: process.env.TURSO_CONNECTION_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
   },
 } satisfies Config;
