@@ -1,0 +1,10 @@
+"use strict";
+var _a;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.db = exports.client = void 0;
+require("dotenv/config");
+var postgres_js_1 = require("drizzle-orm/postgres-js");
+var schema = require("./schema");
+var postgres_1 = require("postgres");
+exports.client = (0, postgres_1.default)((_a = process.env.DB_URL) !== null && _a !== void 0 ? _a : '');
+exports.db = (0, postgres_js_1.drizzle)(exports.client, { schema: schema });

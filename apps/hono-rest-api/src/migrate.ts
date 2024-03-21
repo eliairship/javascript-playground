@@ -5,7 +5,7 @@ import postgres from 'postgres';
 
 const sql = postgres(process.env.MIGRATION_DB_URL ?? '', { max: 1 });
 const db = drizzle(sql);
-await migrate(db, { migrationsFolder: 'drizzle' });
-await sql.end();
+migrate(db, { migrationsFolder: 'drizzle' });
+sql.end();
 // Don't forget to close the connection, otherwise the script will hang
 // await client.end();

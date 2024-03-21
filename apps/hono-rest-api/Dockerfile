@@ -5,8 +5,15 @@ RUN apt-get install -y openssl
 
 WORKDIR /app
 
+COPY . .
+
 RUN npm install -g nodemon
 
 ENTRYPOINT ["sh", "-c"]
 
-CMD ["npm install && npm run dev"]
+RUN npm install
+RUN npm run build
+
+EXPOSE 4000 
+
+CMD ["npm run start"]
