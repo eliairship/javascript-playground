@@ -32,7 +32,12 @@ declare module 'lucia' {
 export const protectedMiddleware: MiddlewareHandler<{
   Variables: Variables;
 }> = async (c, next) => {
-  const sessionId = getCookie(c, lucia.sessionCookieName);
+  const authorizationHeader = c.req.header('Authorization');
+  const headerSessionId = lucia.readBearerToken(authorizationHeader ?? '');
+
+  const cookieSessionId = getCookie(c, lucia.sessionCookieName) ?? null;
+  const sessionId = headerSessionId ?? cookieSessionId;
+
   if (!sessionId) {
     return new Response(null, {
       status: 401,
@@ -47,7 +52,6 @@ export const protectedMiddleware: MiddlewareHandler<{
     });
   }
   if (session && session.fresh) {
-    // set session cookie
     const sessionCookie = lucia.createBlankSessionCookie();
     c.res.headers.append('Set-Cookie', sessionCookie.serialize());
   }
@@ -83,23 +87,12 @@ authRoutes.post(
 
       const session = await lucia.createSession(userId, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
-      // c.req.header.s.set("Set-Cookie", sessionCookie.serialize());
       await setCookie(c, sessionCookie.name, sessionCookie.serialize());
-
-      // await setCookie(c, sessionCookie.name, sessionCookie.value, {
-      //   ...sessionCookie.attributes,
-      //   sameSite: sessionCookie.attributes.sameSite?.toUpperCase as
-      //     | 'Strict'
-      //     | 'Lax'
-      //     | 'None'
-      //     | undefined,
-      // });
-      c.status(302);
+      c.status(200);
       return c.text('Success!');
     } catch (err) {
       console.log(err);
 
-      // db error, email taken, etc
       return new Response('Invalid Email or Password', {
         status: 400,
       });
@@ -128,16 +121,6 @@ authRoutes.post(
     const user = users[0];
 
     if (!user) {
-      // NOTE:
-      // Returning immediately allows malicious actors to figure out valid emails from response times,
-      // allowing them to only focus on guessing passwords in brute-force attacks.
-      // As a preventive measure, you may want to hash passwords even for invalid emails.
-      // However, valid emails can be already be revealed with the signup page
-      // and a similar timing issue can likely be found in password reset implementation.
-      // It will also be much more resource intensive.
-      // Since protecting against this is none-trivial,
-      // it is crucial your implementation is protected against brute-force attacks with login throttling etc.
-      // If emails/usernames are public, you may outright tell the user that the username is invalid.
       return new Response('Invalid email or password', {
         status: 400,
       });
@@ -165,14 +148,13 @@ authRoutes.post(
         | 'None'
         | undefined,
     });
-    c.status(302);
+    c.status(200);
     return c.text('Success!');
   }
 );
 authRoutes.post('/logout', protectedMiddleware, async (c) => {
   const session = c.get('session');
   await deleteCookie(c, lucia.sessionCookieName);
-  // await setCookie(c, lucia.sessionCookieName, '')
   await lucia.invalidateSession(session?.id ?? '');
   return c.text('Logged out.');
 });

@@ -3,8 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "devv": "tsx watch src/index.ts",
-    "buildd": "tsc -p src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsup",
     "start": "node dist/index.js",
     "generate:migration": "drizzle-kit generate:pg",
