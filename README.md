@@ -1,6 +1,9 @@
 # JS Playground 
 ## API Specification
 
+### Endpoint
+https://javascript-playground-5ccu.onrender.com
+
 #### Auth
 `POST /auth/signin`
 Returns a `Set-Cookie` header with the session.
