@@ -12,6 +12,9 @@ RUN npm install -g nodemon
 ENTRYPOINT ["sh", "-c"]
 
 RUN npm install
+
+RUN npm run db:push
+
 RUN npm run build
 
 EXPOSE 4000 

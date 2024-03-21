@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "generate:migration": "drizzle-kit generate:pg",
     "db:migrate": "tsx src/migrate.ts",
+    "db:push": "drizzle-kit push:pg --config=drizzle.config.ts",
     "db:studio": "drizzle-kit studio --port 5000 --verbose"
   },
   "dependencies": {
