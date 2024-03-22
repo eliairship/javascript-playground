@@ -2,6 +2,15 @@ import { component$ } from "@builder.io/qwik";
 import type { CookieOptions, DocumentHead } from "@builder.io/qwik-city";
 import { Form, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 
+import type { RequestHandler } from "@builder.io/qwik-city";
+
+export const onRequest: RequestHandler = async ({ cookie, redirect }) => {
+  const hasAuthCookie = cookie.get("auth_session");
+  if (hasAuthCookie) {
+    throw redirect(308, "/user");
+  }
+};
+
 export const useLoginAction = routeAction$(
   async (user, requestEvent) => {
     const response = await fetch(
@@ -12,7 +21,6 @@ export const useLoginAction = routeAction$(
           "Content-Type": "application/json",
         },
         body: JSON.stringify(user),
-        credentials: "include",
       },
     );
 
@@ -53,7 +61,7 @@ export const useLoginAction = routeAction$(
 
     requestEvent.cookie.set(cookieName, cookieValue, options);
 
-    return { success: true, user };
+    throw requestEvent.redirect(308, "/user");
   },
   zod$({
     email: z.string().email(),
@@ -126,7 +134,7 @@ export default component$(() => {
           </div>
         </Form>
       </div>
-      {action.value?.success && <p class="pt-4">Logged in successfully</p>}
+
       {action.value?.failed && (
         <p class="pt-4 text-red-500">{action.value.message}</p>
       )}
