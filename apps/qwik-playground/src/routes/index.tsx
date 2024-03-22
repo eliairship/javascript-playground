@@ -3,8 +3,24 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { Form, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 
 export const useLoginAction = routeAction$(
-  async (user) => {
-    return { success: true, user };
+  async (user, requestEvent) => {
+    const response = await fetch(
+      "https://javascript-playground-5ccu.onrender.com/auth/signin",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      },
+    );
+
+    if (response.ok) {
+      const authCookie = response.headers.getSetCookie();
+      requestEvent.cookie.set("auth_session", authCookie);
+      return { success: true, user };
+    }
+    return requestEvent.fail(response.status, { message: "Login Failed" });
   },
   zod$({
     email: z.string().email(),
@@ -16,7 +32,7 @@ export default component$(() => {
   const action = useLoginAction();
 
   return (
-    <div class="flex h-screen flex-col items-center justify-center">
+    <div class="flex h-full flex-col items-center justify-center">
       <div
         class="bg-card text-card-foreground rounded-lg border shadow-sm"
         data-v0-t="card"
@@ -45,7 +61,7 @@ export default component$(() => {
               value={action.formData?.get("email")}
             />
             {action.value?.failed && (
-              <p class="text-red-700">{action.value.fieldErrors.email}</p>
+              <p class="text-red-700">{action.value.fieldErrors?.email}</p>
             )}
           </div>
           <div class="space-y-2">
@@ -64,7 +80,7 @@ export default component$(() => {
               value={action.formData?.get("password")}
             />
             {action.value?.failed && (
-              <p class="text-red-700">{action.value.fieldErrors.password}</p>
+              <p class="text-red-700">{action.value.fieldErrors?.password}</p>
             )}
           </div>
           <div class="flex items-center p-6">
@@ -78,6 +94,9 @@ export default component$(() => {
         </Form>
       </div>
       {action.value?.success && <p class="pt-4">Logged in successfully</p>}
+      {action.value?.failed && (
+        <p class="pt-4 text-red-500">{action.value.message}</p>
+      )}
     </div>
   );
 });
