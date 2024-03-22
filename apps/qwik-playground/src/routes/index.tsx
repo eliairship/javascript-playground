@@ -1,26 +1,59 @@
 import { component$ } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import type { CookieOptions, DocumentHead } from "@builder.io/qwik-city";
 import { Form, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 
 export const useLoginAction = routeAction$(
   async (user, requestEvent) => {
     const response = await fetch(
-      "https://javascript-playground-5ccu.onrender.com/auth/signin",
+      "https://javascript-playground-5ccu.onrender.com/auth/login",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(user),
+        credentials: "include",
       },
     );
 
-    if (response.ok) {
-      const authCookie = response.headers.getSetCookie();
-      requestEvent.cookie.set("auth_session", authCookie);
-      return { success: true, user };
+    if (!response.ok) {
+      return requestEvent.fail(response.status, { message: "Login Failed" });
     }
-    return requestEvent.fail(response.status, { message: "Login Failed" });
+
+    function parseCookieString(cookieString: string) {
+      const parts = cookieString.split(";");
+      const cookieName = parts[0].trim().split("=")[0];
+      const cookieValue = parts[0].trim().split("=")[1];
+
+      const options: CookieOptions = {};
+
+      for (let i = 1; i < parts.length; i++) {
+        const part = parts[i].trim();
+        if (part.startsWith("Max-Age=")) {
+          options.maxAge = Number.parseInt(part.split("=")[1]);
+        } else if (part.startsWith("Path=")) {
+          options.path = part.split("=")[1];
+        } else if (part === "HttpOnly") {
+          options.httpOnly = true;
+        } else if (part.startsWith("SameSite=")) {
+          const sameSiteValue = part.split("=")[1].toLowerCase();
+          if (["strict", "lax", "none"].includes(sameSiteValue)) {
+            options.sameSite = sameSiteValue as CookieOptions["sameSite"];
+          }
+        }
+      }
+
+      return { cookieName, cookieValue, options };
+    }
+
+    const cookieString = response.headers.getSetCookie()[0];
+
+    const { cookieName, cookieValue, options } =
+      parseCookieString(cookieString);
+
+    requestEvent.cookie.set(cookieName, cookieValue, options);
+
+    return { success: true, user };
   },
   zod$({
     email: z.string().email(),
