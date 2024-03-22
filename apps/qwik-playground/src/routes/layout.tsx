@@ -21,12 +21,8 @@ export const useServerTimeLoader = routeLoader$(() => {
 
 export default component$(() => {
   return (
-    <>
-      {/* <Header /> */}
-      <main class="mx-auto flex max-w-screen-lg flex-col gap-4 p-4">
-        <Slot />
-      </main>
-      {/* <Footer /> */}
-    </>
+    <main class="mx-auto flex h-screen max-w-screen-lg flex-col gap-4 p-4">
+      <Slot />
+    </main>
   );
 });
