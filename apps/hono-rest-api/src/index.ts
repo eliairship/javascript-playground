@@ -6,6 +6,7 @@ import 'dotenv/config';
 import { getCookie } from 'hono/cookie';
 import { Session, User } from 'lucia';
 import { protectedRoutes } from './routes/protected';
+import { cors } from 'hono/cors';
 
 export type HonoVariables = {
   session: Session | null;
@@ -14,7 +15,16 @@ export type HonoVariables = {
 
 const app = new Hono<{ Variables: HonoVariables }>();
 app.use(logger());
-
+app.use(
+  '*',
+  cors({
+    origin: '*',
+    allowHeaders: ['*'],
+    allowMethods: ['POST', 'GET'],
+    exposeHeaders: ['*'],
+    credentials: true,
+  })
+);
 // app.use(async (c, next) => {
 //   const sessionId = getCookie(c, lucia.sessionCookieName);
 //   if (!sessionId) {
