@@ -15,6 +15,7 @@ export type HonoVariables = {
 
 const app = new Hono<{ Variables: HonoVariables }>();
 app.use(logger());
+app.use('/*', cors());
 // app.use(
 //   '*',
 //   cors({
@@ -25,26 +26,6 @@ app.use(logger());
 //     credentials: true,
 //   })
 // );
-// app.use(async (c, next) => {
-//   const sessionId = getCookie(c, lucia.sessionCookieName);
-//   if (!sessionId) {
-//     return new Response(null, {
-//       status: 401,
-//     });
-//   }
-
-//   const { session, user } = await lucia.validateSession(sessionId);
-//   if (session && session.fresh) {
-//     // set session cookie
-//     const sessionCookie = lucia.createBlankSessionCookie();
-//     c.res.headers.append('Set-Cookie', sessionCookie.serialize());
-//   }
-
-//   c.set('session', session);
-//   c.set('user', user);
-
-//   await next();
-// });
 
 app.route('/auth', authRoutes);
 app.route('/protected', protectedRoutes);
