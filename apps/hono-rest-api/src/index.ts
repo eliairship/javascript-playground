@@ -15,16 +15,16 @@ export type HonoVariables = {
 
 const app = new Hono<{ Variables: HonoVariables }>();
 app.use(logger());
-app.use(
-  '*',
-  cors({
-    origin: '*',
-    allowHeaders: ['*'],
-    allowMethods: ['POST', 'GET'],
-    exposeHeaders: ['*'],
-    credentials: true,
-  })
-);
+// app.use(
+//   '*',
+//   cors({
+//     origin: '*',
+//     allowHeaders: ['*'],
+//     allowMethods: ['POST', 'GET'],
+//     exposeHeaders: ['*'],
+//     credentials: true,
+//   })
+// );
 // app.use(async (c, next) => {
 //   const sessionId = getCookie(c, lucia.sessionCookieName);
 //   if (!sessionId) {
