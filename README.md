@@ -5,7 +5,7 @@
 https://javascript-playground-5ccu.onrender.com
 
 #### Auth
-`POST /auth/signin`
+`POST /auth/login`
 Returns a `Set-Cookie` header with the session.
 
 Request
