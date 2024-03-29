@@ -53,7 +53,11 @@ export const protectedMiddleware: MiddlewareHandler<{
   }
   if (session && session.fresh) {
     const sessionCookie = lucia.createBlankSessionCookie();
-    c.res.headers.append('Set-Cookie', sessionCookie.serialize());
+    await setCookie(c, sessionCookie.name, sessionCookie.value, {
+      ...sessionCookie.attributes,
+      sameSite: 'None',
+    });
+    // c.res.headers.append('Set-Cookie', sessionCookie.serialize());
   }
 
   c.set('session', session);
@@ -89,6 +93,7 @@ authRoutes.post(
       const sessionCookie = lucia.createSessionCookie(session.id);
       await setCookie(c, sessionCookie.name, sessionCookie.value, {
         ...sessionCookie.attributes,
+        httpOnly: false,
         sameSite: 'None',
       });
       c.status(200);
