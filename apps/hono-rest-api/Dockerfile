@@ -9,6 +9,8 @@ COPY . .
 
 RUN npm install -g nodemon
 
+ENV NODE_ENV production
+
 ENTRYPOINT ["sh", "-c"]
 
 RUN npm install
