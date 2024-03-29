@@ -28,14 +28,15 @@ app.use(logger());
 // );
 
 app.use(
+  '/auth/*',
   cors({
     origin(origin) {
       return origin;
     },
-    allowHeaders: ['*'],
-    allowMethods: ['*'],
+    // allowHeaders: ['*'],
+    // allowMethods: ['*'],
     credentials: true,
-    exposeHeaders: ['*'],
+    // exposeHeaders: ['*'],
   })
 );
 
