@@ -1,9 +1,8 @@
 import { serve } from '@hono/node-server';
 import { logger } from 'hono/logger';
 import { Hono } from 'hono';
-import { authRoutes, lucia } from './routes/auth';
+import { authRoutes } from './routes/auth';
 import 'dotenv/config';
-import { getCookie } from 'hono/cookie';
 import { Session, User } from 'lucia';
 import { protectedRoutes } from './routes/protected';
 import { cors } from 'hono/cors';
@@ -15,17 +14,6 @@ export type HonoVariables = {
 
 const app = new Hono<{ Variables: HonoVariables }>();
 app.use(logger());
-// app.use('/*', cors());
-// app.use(
-//   '*',
-//   cors({
-//     origin: '*',
-//     allowHeaders: ['*'],
-//     allowMethods: ['POST', 'GET'],
-//     exposeHeaders: ['*'],
-//     credentials: true,
-//   })
-// );
 
 app.use(
   '/auth/*',
@@ -33,10 +21,7 @@ app.use(
     origin(origin) {
       return origin;
     },
-    // allowHeaders: ['*'],
-    // allowMethods: ['*'],
     credentials: true,
-    // exposeHeaders: ['*'],
   })
 );
 
