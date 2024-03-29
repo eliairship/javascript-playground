@@ -129,7 +129,7 @@ Return a user
 Request Header
 ```json
 {
-  headers: {
+  "headers": {
     "Authorization": "Bearer <some-access-token>"
   }
 }
