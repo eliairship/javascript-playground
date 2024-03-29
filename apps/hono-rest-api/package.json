@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
     "generate:migration": "drizzle-kit generate:pg",
     "db:migrate": "tsx src/migrate.ts",
     "db:studio": "drizzle-kit studio --port 5000 --verbose"
@@ -15,16 +17,21 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.29.4",
     "hono": "^4.0.8",
-    "lucia": "^3.0.1",
+    "jsonwebtoken": "^9.0.2",
     "oslo": "^1.1.3",
     "pg": "^8.11.3",
     "postgres": "^3.4.3",
+    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.17",
     "@types/pg": "^8.11.2",
+    "@types/uuid": "^9.0.8",
     "drizzle-kit": "^0.20.14",
+    "typescript": "^5.4.3",
+    "tsup": "^8.0.2",
     "tsx": "^3.12.2"
   }
 }
