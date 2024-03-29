@@ -88,7 +88,8 @@ authRoutes.post(
 
       const session = await lucia.createSession(userId, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
-      await setCookie(c, sessionCookie.name, sessionCookie.serialize(), {
+      await setCookie(c, sessionCookie.name, sessionCookie.value, {
+        ...sessionCookie.attributes,
         sameSite: 'None',
       });
       c.status(200);
@@ -143,13 +144,17 @@ authRoutes.post(
     const session = await lucia.createSession(user.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
+    // await setCookie(c, sessionCookie.name, sessionCookie.value, {
+    //   ...sessionCookie.attributes,
+    //   sameSite: sessionCookie.attributes.sameSite?.toUpperCase as
+    //     | 'Strict'
+    //     | 'Lax'
+    //     | 'None'
+    //     | undefined,
+    // });
     await setCookie(c, sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
-      sameSite: sessionCookie.attributes.sameSite?.toUpperCase as
-        | 'Strict'
-        | 'Lax'
-        | 'None'
-        | undefined,
+      sameSite: 'None',
     });
     c.status(200);
     return c.text('Success!');
