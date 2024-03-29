@@ -17,7 +17,8 @@ export const lucia = new Lucia(adapter, {
   sessionCookie: {
     attributes: {
       // set to `true` when using HTTPS
-      secure: process.env.NODE_ENV === 'production',
+      // secure: process.env.NODE_ENV === 'production',
+      secure: true,
     },
   },
 });
@@ -87,7 +88,9 @@ authRoutes.post(
 
       const session = await lucia.createSession(userId, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
-      await setCookie(c, sessionCookie.name, sessionCookie.serialize());
+      await setCookie(c, sessionCookie.name, sessionCookie.serialize(), {
+        sameSite: 'None',
+      });
       c.status(200);
       return c.text('Success!');
     } catch (err) {

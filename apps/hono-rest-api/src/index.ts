@@ -15,7 +15,7 @@ export type HonoVariables = {
 
 const app = new Hono<{ Variables: HonoVariables }>();
 app.use(logger());
-app.use('/*', cors());
+// app.use('/*', cors());
 // app.use(
 //   '*',
 //   cors({
@@ -26,6 +26,18 @@ app.use('/*', cors());
 //     credentials: true,
 //   })
 // );
+
+app.use(
+  cors({
+    origin(origin) {
+      return origin;
+    },
+    allowHeaders: ['*'],
+    allowMethods: ['*'],
+    credentials: true,
+    exposeHeaders: ['*'],
+  })
+);
 
 app.route('/auth', authRoutes);
 app.route('/protected', protectedRoutes);
