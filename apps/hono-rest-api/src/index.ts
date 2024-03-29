@@ -6,37 +6,17 @@ import 'dotenv/config';
 import { getCookie } from 'hono/cookie';
 import { Session, User } from 'lucia';
 import { protectedRoutes } from './routes/protected';
+import { jwtAuthRoutes } from './routes/jwt-auth';
 
 export type HonoVariables = {
-  session: Session | null;
-  user: User | null;
+  userId: string | null;
 };
 
 const app = new Hono<{ Variables: HonoVariables }>();
 app.use(logger());
 
-// app.use(async (c, next) => {
-//   const sessionId = getCookie(c, lucia.sessionCookieName);
-//   if (!sessionId) {
-//     return new Response(null, {
-//       status: 401,
-//     });
-//   }
-
-//   const { session, user } = await lucia.validateSession(sessionId);
-//   if (session && session.fresh) {
-//     // set session cookie
-//     const sessionCookie = lucia.createBlankSessionCookie();
-//     c.res.headers.append('Set-Cookie', sessionCookie.serialize());
-//   }
-
-//   c.set('session', session);
-//   c.set('user', user);
-
-//   await next();
-// });
-
-app.route('/auth', authRoutes);
+// app.route('/auth', authRoutes);
+app.route('/auth', jwtAuthRoutes);
 app.route('/protected', protectedRoutes);
 
 app.get('/', (c) => {

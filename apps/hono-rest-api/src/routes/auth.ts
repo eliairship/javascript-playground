@@ -173,7 +173,7 @@ authRoutes.post('/logout', protectedMiddleware, async (c) => {
   const session = c.get('session');
   await deleteCookie(c, lucia.sessionCookieName);
   // await setCookie(c, lucia.sessionCookieName, '')
-  await lucia.invalidateSession(session?.id ?? '');
+  // await lucia.invalidateSession(session?.id ?? '');
   return c.text('Logged out.');
 });
 
