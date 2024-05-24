@@ -1,23 +1,13 @@
 import { component$ } from "@builder.io/qwik";
-import { routeAction$, type RequestHandler } from "@builder.io/qwik-city";
-
-export const onRequest: RequestHandler = async ({ cookie, redirect }) => {
-  const hasAuthCookie = cookie.get("auth_session");
-  if (!hasAuthCookie) {
-    throw redirect(308, "/");
-  }
-};
+import { routeAction$ } from "@builder.io/qwik-city";
+import { Signin } from "~/declarativeRoutes";
 
 export const useLogoutAction = routeAction$(async (_data, requestEvent) => {
-  console.log(requestEvent.cookie.has("auth_session"));
+  console.log(requestEvent.cookie.has("session"));
 
-  requestEvent.cookie.delete("auth_session");
+  requestEvent.cookie.set("session", "", { path: "/", expires: new Date() });
 
-  console.log(requestEvent.cookie.has("auth_session"));
-
-  return {
-    success: true,
-  };
+  throw requestEvent.redirect(308, Signin());
 });
 
 export default component$(() => {

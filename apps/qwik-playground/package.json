@@ -21,7 +21,9 @@
     "lint": "eslint \"src/**/*.ts*\"",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr",
-    "qwik": "qwik"
+    "qwik": "qwik",
+    "dr:build": "npx declarative-routing build",
+    "dr:build:watch": "npx declarative-routing build --watch"
   },
   "devDependencies": {
     "@builder.io/qwik": "^1.5.1",
@@ -43,6 +45,8 @@
     "vite-tsconfig-paths": "^4.2.1"
   },
   "dependencies": {
-    "@modular-forms/qwik": "^0.23.1"
+    "@modular-forms/qwik": "^0.23.1",
+    "query-string": "^9.0.0",
+    "zod": "^3.22.4"
   }
 }
