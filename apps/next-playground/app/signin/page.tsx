@@ -36,6 +36,7 @@ const SignInPage = () => {
     redirect(Dashboard());
   }
 
+  // TODO: Add error handling
   return (
     <div>
       Sign In
